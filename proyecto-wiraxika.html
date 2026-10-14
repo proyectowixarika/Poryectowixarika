@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wixárika | Pueblo Milenario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --fondo: #FFF9F0;
+            --texto: #252525;
+            --texto-claro: #666666;
+            --acento: #E67E22;
+            --acento-claro: #FFE0B2;
+            --secundario: #27AE60;
+            --secundario-claro: #E8F5E9;
+            --terciario: #2980B9;
+            --resaltado: #E74C3C;
+            --borde: #F0E6D8;
+            --blanco: #FFFFFF;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--fondo);
+            color: var(--texto);
+            line-height: 1.7;
+        }
+
+        /* 🔝 Navegación */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 249, 240, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid transparent;
+            z-index: 1000;
+            transition: all 0.4s ease;
+        }
+
+        nav.scrolled {
+            border-bottom: 2px solid var(--acento-claro);
+            box-shadow: 0 2px 20px rgba(230, 126, 34, 0.12);
+        }
+
+        .logo {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--acento);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--texto-claro);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+
+        .nav-links a:hover {
+            color: var(--acento);
+            transform: translateY(-2px);
+        }
+
+        /* 🖼️ Portada con carrusel */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 30px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-carrusel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+
+        .hero-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.65) saturate(1.3);
+        }
+
+        .hero-slide.activo {
+            opacity: 1;
+        }
+
+        .hero-contenido {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.2rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: aparecer 1s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .hero h1 span {
+            color: #FFCC66;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            animation: aparecer 1s ease 0.2s forwards;
+            opacity: 0;
+            transform: translateY(20px);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        @keyframes aparecer {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bajar-indicador {
+            margin-top: 60px;
+            animation: aparecer 1s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        .bajar-indicador span {
+            display: block;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .flecha {
+            font-size: 1.8rem;
+            animation: flotar 2s ease-in-out infinite;
+            color: #FFCC66;
+        }
+
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(12px); }
+        }
+
+        /* 📦 Secciones */
+        section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 90px 30px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .encabezado-seccion {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .etiqueta {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--resaltado);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .titulo-seccion {
+            font-size: 2.1rem;
+            margin-bottom: 15px;
+            color: var(--acento);
+        }
+
+        .subtitulo {
+            color: var(--texto-claro);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+        }
+
+        /* 🖼️ Imagen principal con efecto */
+        .imagen-principal {
+            width: 100%;
+            height: 380px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 40px 0;
+            box-shadow: 0 10px 35px rgba(230, 126, 34, 0.15);
+            border: 3px solid var(--acento-claro);
+        }
+
+        .imagen-principal img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+            filter: saturate(1.1);
+        }
+
+        .imagen-principal:hover img {
+            transform: scale(1.06);
+            filter: saturate(1.3);
+        }
+
+        /* 📝 Bloque de texto */
+        .bloque {
+            background: var(--blanco);
+            border-left: 4px solid var(--acento);
+            border-radius: 14px;
+            padding: 35px;
+            margin-bottom: 25px;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.06);
+        }
+
+        .bloque:hover {
+            border-left-color: var(--resaltado);
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.12);
+            transform: translateY(-4px);
+        }
+
+        .bloque h3 {
+            font-size: 1.3rem;
+            margin-bottom: 18px;
+            color: var(--acento);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bloque p {
+            color: var(--texto-claro);
+            line-height: 1.8;
+        }
+
+        /* 🎤 Canción dos columnas */
+        .grid-dos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-dos {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .columna {
+            background: linear-gradient(135deg, var(--acento-claro), #FFD89B);
+            border-radius: 16px;
+            padding: 30px;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.15);
+        }
+
+        .columna:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(230, 126, 34, 0.25);
+        }
+
+        .columna h4 {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: var(--resaltado);
+            padding-bottom: 12px;
+            border-bottom: 2px dashed rgba(231, 76, 60, 0.25);
+        }
+
+        .verso {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .coro {
+            font-style: italic;
+            color: var(--secundario);
+            font-weight: 600;
+        }
+
+        /* 🗣️ Pronunciación */
+        .caja-clara {
+            background: linear-gradient(135deg, var(--secundario-claro), #C8E6C9);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(39, 174, 96, 0.2);
+        }
+
+        .caja-clara:hover {
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.15);
+            border-color: var(--secundario);
+        }
+
+        .caja-clara h4 {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--secundario);
+            margin-bottom: 15px;
+        }
+
+        .caja-clara p {
+            line-height: 2;
+            color: var(--texto);
+        }
+
+        /* 📸 Galería más grande */
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .galeria {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .foto {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 3px solid transparent;
+            transition: all 0.4s ease;
+        }
+
+        .foto:hover {
+            border-color: var(--acento);
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.2);
+        }
+
+        .foto img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+            filter: saturate(1.1);
+        }
+
+        .foto:hover img {
+            transform: scale(1.15);
+            filter: saturate(1.4);
+        }
+
+        .foto-nombre {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: #FFCC66;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transform: translateY(12px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .foto:hover .foto-nombre {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* 🖼️ Sección con imagen fija tipo parallax */
+        .imagen-fija-seccion {
+            width: 100%;
+            height: 300px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 50px 0;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.15);
+            border: 3px solid var(--secundario);
+        }
+
+        .imagen-fija-seccion img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(1.15);
+        }
+
+        /* 📝 Argumentos */
+        .argumento {
+            padding: 22px;
+            border-left: 4px solid var(--secundario);
+            background: linear-gradient(90deg, var(--secundario-claro), transparent);
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .argumento:hover {
+            padding-left: 28px;
+            background: linear-gradient(90deg, #C8E6C9, transparent);
+            border-left-color: var(--terciario);
+        }
+
+        .argumento strong {
+            color: var(--secundario);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+
+        /* 📊 Tarjetas de datos */
+        .tarjetas {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .tarjetas {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .tarjeta {
+            background: var(--blanco);
+            border: 2px solid var(--borde);
+            border-radius: 14px;
+            padding: 25px 15px;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .tarjeta:nth-child(1):hover {
+            border-color: var(--acento);
+            background: linear-gradient(135deg, #FFF3E0, #FFFFFF);
+        }
+
+        .tarjeta:nth-child(2):hover {
+            border-color: var(--secundario);
+            background: linear-gradient(135deg, #E8F5E9, #FFFFFF);
+        }
+
+        .tarjeta:nth-child(3):hover {
+            border-color: var(--terciario);
+            background: linear-gradient(135deg, #E3F2FD, #FFFFFF);
+        }
+
+        .tarjeta:nth-child(4):hover {
+            border-color: var(--resaltado);
+            background: linear-gradient(135deg, #FFEBEE, #FFFFFF);
+        }
+
+        .tarjeta:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .numero {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--acento);
+            margin-bottom: 5px;
+        }
+
+        .etiqueta-tarjeta {
+            font-size: 0.85rem;
+            color: var(--texto-claro);
+            font-weight: 500;
+        }
+
+        /* 🔽 Botón volver arriba */
+        .boton-arriba {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--acento), var(--resaltado));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 99;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
+        }
+
+        .boton-arriba.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .boton-arriba:hover {
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.5);
+        }
+
+        /* Pie */
+        footer {
+            text-align: center;
+            padding: 50px 30px 70px;
+            border-top: 3px solid var(--acento-claro);
+            margin-top: 60px;
+            color: var(--texto-claro);
+            font-size: 0.9rem;
+            background: linear-gradient(to bottom, transparent, rgba(230, 126, 34, 0.03));
+        }
+
+        footer p:first-child {
+            color: var(--acento);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🔝 Menú -->
+    <nav id="menu">
+        <div class="logo">WIXÁRIKA ✦</div>
+        <ul class="nav-links">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#musica">Kusinela</a></li>
+            <li><a href="#cultura">Cultura</a></li>
+            <li><a href="#reporte">Reporte</a></li>
+        </ul>
+    </nav>
+
+    <!-- 🏠 Portada con carrusel -->
+    <section class="hero" id="inicio">
+        <div class="hero-carrusel">
+            <div class="hero-slide activo">
+                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400&h=800&fit=crop" alt="Montañas Wixárika">
+            </div>
+            <div class="hero-slide">
+                <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1400&h=800&fit=crop" alt="Sierra y cielo">
+            </div>
+            <div class="hero-slide">
+                <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1400&h=800&fit=crop" alt="Lucero en el cielo">
+            </div>
+        </div>
+
+        <div class="hero-contenido">
+            <h1>El Pueblo <span>Wixárika</span></h1>
+            <p>Colores, tradición y vida de un pueblo milenario ✦</p>
+        </div>
+
+        <div class="bajar-indicador">
+            <span>Desplázate hacia abajo</span>
+            <div class="flecha">↓</div>
+        </div>
+    </section>
+
+    <!-- 🎤 KUSINELA -->
+    <section id="musica">
+        <div class="encabezado-seccion">
+            <p class="etiqueta">✦ Canción Tradicional ✦</p>
+            <h2 class="titulo-seccion">Kusinela — El Lucerito</h2>
+            <p class="subtitulo">Una canción que conecta el cielo con la tierra ✦</p>
+        </div>
+
+        <div class="imagen-principal">
+            <img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1200&h=450&fit=crop" alt="Lucero en el cielo nocturno">
+        </div>
+
+        <div class="grid-dos">
+            <div class="columna">
+                <h4>🇪🇸 Español</h4>
+                <p class="verso"><strong>Estrofa 1</strong><br>
+                Lucerito, lucerito,<br>
+                brillas en el cielo,<br>
+                guíanos de noche,<br>
+                camino sagrado.</p>
+                
+                <p class="verso coro"><strong>✦ Coro ✦</strong><br>
+                Kusinela, Kusinela,<br>
+                estrella que nos cuida,<br>
+                Kusinela, Kusinela,<br>
+                luz de nuestro pueblo.</p>
+                
+                <p class="verso"><strong>Estrofa 2</strong><br>
+                Donde nace el sol,<br>
+                donde canta el viento,<br>
+                vive nuestra gente,<br>
+                guardando el silencio.</p>
+            </div>
+
+            <div class="columna">
+                <h4>🗣️ Wixárika</h4>
+                <p class="verso"><strong>Estrofa 1</strong><br>
+                Kusinela, kusinela,<br>
+                Tewi kya tiyuinaka,<br>
+                Niye tsika kwiyenaka,<br>
+                Haramara nika.</p>
+                
+                <p class="verso coro"><strong>✦ Coro ✦</strong><br>
+                Kusinela, Kusinela,<br>
+                Tewi kya tiyuinaka,<br>
+                Kusinela, Kusinela,<br>
+                Wari xukuri nika.</p>
+                
+                <p class="verso"><strong>Estrofa 2</strong><br>
+                Aka taya tsipa,<br>
+                Kwiyuxa tsimaka,<br>
+                Wixárika tsipa,<br>
+                Tuari tewimeka.</p>
+            </div>
+        </div>
+
+        <div class="caja-clara">
+            <h4>🗣️ Guía de pronunciación</h4>
+            <p><strong style="color:var(--terciario);">Kusinela</strong> — Ku-si-NÉ-la &nbsp;|&nbsp; <strong style="color:var(--terciario);">Tewi kya tiyuinaka</strong> — TÉ-ui kia ti-yu-i-NA-ka<br>
+            <strong style="color:var(--terciario);">Niye tsika kwiyenaka</strong> — NÍ-ye tsí-ka kwi-ye-NA-ka &nbsp;|&nbsp; <strong style="color:var(--terciario);">Haramara nika</strong> — Ha-ra-MA-ra NÍ-ka<br>
+            <strong style="color:var(--terciario);">Wari xukuri nika</strong> — WA-ri xu-KU-ri NÍ-ka &nbsp;|&nbsp; <strong style="color:var(--terciario);">Aka taya tsipa</strong> — A-KA tá-ya tsí-pa<br>
+            <strong style="color:var(--terciario);">Kwiyuxa tsimaka</strong> — Kwi-YU-xa tsí-ma-ka &nbsp;|&nbsp; <strong style="color:var(--terciario);">Wixárika tsipa</strong> — Wi-XÁ-ri-ka tsí-pa<br>
+            <strong style="color:var(--terciario);">Tuari tewimeka</strong> — Tu-Á-ri te-wi-MÉ-ka</p>
+        </div>
+
+        <div class="bloque">
+            <h3>✨ ¿Qué significa?</h3>
+            <p><em>Kusinela</em> es el lucero, la estrella que guía al pueblo en la oscuridad. Para los wixárikas, las estrellas son sus antepasados que los cuidan desde el cielo. Esta canción es una oración llena de colores y luz: "Lucerito, brilla y guíanos por el camino sagrado". Se canta en ceremonias y reuniones familiares para agradecer la vida.</p>
+        </div>
+    </section>
+
+    <!-- 🎨 CULTURA WIXÁRIKA -->
+    <section id="cultura">
+        <div class="encabezado-seccion">
+            <p class="etiqueta">✦ Nuestra Raíz ✦</p>
+            <h2 class="titulo-seccion">El Pueblo Wixárika</h2>
+            <p class="subtitulo">Colores, historia y tradiciones que siguen vivas ✦</p>
+        </div>
+
+        <div class="imagen-principal">
+            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&h=450&fit=crop" alt="Sierra — hogar del pueblo Wixárika">
+        </div>
+
+        <div class="bloque">
+            <h3>🌍 ¿Quiénes son?</h3>
+            <p>Los wixárikas son uno de los pueblos originarios más antiguos de México. Habitan en la sierra entre Jalisco y Nayarit. A diferencia de otros pueblos, nunca fueron conquistados, por eso conservan su lengua, sus costumbres y su forma de ver el mundo tal como lo hacían sus antepasados hace cientos de años. ¡Su cultura brilla con colores vivos!</p>
+        </div>
+
+        <div class="imagen-fija-seccion">
+            <img src="https://images.unsplash.com/photo-1518173946687-a4c0361a1f74?w=1200&h=400&fit=crop" alt="Paisaje Wixárika">
+        </div>
+
+        <div class="bloque">
+            <h3>🏔️ Wirikuta — Donde nació el sol</h3>
+            <p>Wirikuta es el lugar más sagrado del pueblo wixárika, en el desierto de San Luis Potosí. Allí, según su historia, nació el sol y comenzó la vida. Cada año, cientos de personas caminan más de 300 kilómetros hasta llegar ahí. Es una peregrinación de fe, respeto y conexión con sus raíces.</p>
+        </div>
+
+        <div class="bloque">
+            <h3>🎨 El arte que cuenta historias</h3>
+            <p>Las artesanías wixárikas están llenas de colores brillantes. Cada símbolo tiene un significado: el sol, la luna, la lluvia, el venado y el peyote. Usan chaquira de todos los colores, estambre y madera para crear piezas únicas que transmiten su conocimiento de generación en generación. ¡Sus colores son su voz!</p>
+        </div>
+
+        <h3 style="text-align:center; margin:50px 0 25px; font-size:1rem; text-transform:uppercase; letter-spacing:2px; color:var(--acento); font-weight:700;">📸 Galería — Colores y Vida ✦</h3>
+        
+        <div class="galeria">
+            <div class="foto">
+                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=500&fit=crop" alt="Símbolos sagrados">
+                <span class="foto-nombre">🎨 Símbolos sagrados</span>
+            </div>
+            <div class="foto">
+                <img src="https://images.unsplash.com/photo-1523459033054-a186d34d0b7c?w=500&h=500&fit=crop" alt="Chaquira">
+                <span class="foto-nombre">✨ Chaquira</span>
+            </div>
+            <div class="foto">
+                <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=500&h=500&fit=crop" alt="Bordados">
+                <span class="foto-nombre">🧵 Bordados</span>
+            </div>
+            <div class="foto">
+                <img src="https://images.unsplash.com/photo-1513364776143-7360c6e21a03?w=500&h=500&fit=crop" alt="Montañas">
+                <span class="foto-nombre">⛰️ Nuestra tierra</span>
+            </div>
+            <div class="foto">
+                <img src="https://images.unsplash.com/photo-1569106595489-680b233c1c68?w=500&h=500&fit=crop" alt="Manos creando arte">
+                <span class="foto-nombre">👐 Arte tradicional</span>
+            </div>
+            <div class="foto">
+                <img src="https://images.unsplash.com/photo-1541450835070-3d5a2d40f8c2?w=500&h=500&fit=crop" alt="Colores naturales">
+                <span class="foto-nombre">🌈 Colores vivos</span>
+            </div>
+            <div class="foto">
+                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=500&fit=crop" alt="Amanecer en la sierra">
+                <span class="foto-nombre">🌅 Amanecer</span>
+            </div>
+            <div class="foto">
+                <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=500&h=500&fit=crop" alt="Naturaleza viva">
+                <span class="foto-nombre">🌿 Naturaleza</span>
+            </div>
+        </div>
+
+        <div class="tarjetas">
+            <div class="tarjeta">
+                <div class="numero">43K+</div>
+                <div class="etiqueta-tarjeta">Hablas de wixárika</div>
+            </div>
+            <div class="tarjeta">
+                <div class="numero">68</div>
+                <div class="etiqueta-tarjeta">Lenguas de México</div>
+            </div>
+            <div class="tarjeta">
+                <div class="numero">500+</div>
+                <div class="etiqueta-tarjeta">Años de luz</div>
+            </div>
+            <div class="tarjeta">
+                <div class="numero">💛</div>
+                <div class="etiqueta-tarjeta">Un solo pueblo</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 📝 REPORTE -->
+    <section id="reporte">
+        <div class="encabezado-seccion">
+            <p class="etiqueta">✦ Reflexión ✦</p>
+            <h2 class="titulo-seccion">¿Por qué cuidar nuestras lenguas?</h2>
+            <p class="subtitulo">La lengua es el alma de un pueblo que no debemos perder ✦</p>
+        </div>
+
+        <div class="bloque">
+            <h3>📌 Introducción</h3>
+            <p>México es un país lleno de colores y riquezas culturales. Existen 68 lenguas indígenas nacionales, cada una con su propia historia y forma de ver el mundo. El wixárika es una de ellas, llena de luz y sabiduría. Sin embargo, muchas de estas lenguas están desapareciendo. En este reporte explico por qué es importante que las cuidemos y las valoremos.</p>
+        </div>
+
+        <div class="bloque">
+            <h3>💬 Mis argumentos</h3>
+            
+            <div class="argumento">
+                <strong>🌟 1. Cuando se pierde una lengua, se pierde un tesoro</strong>
+                Con las palabras también se van conocimientos sobre plantas, remedios, tradiciones y formas de entender la naturaleza que han pasado de abuelos a nietos por siglos. Nadie puede recuperar ese tesoro si se pierde.
+            </div>
+
+            <div class="argumento">
+                <strong>🌈 2. La diversidad nos hace más ricos</strong>
+                Conocer otras lenguas nos enseña que hay muchos colores en el mundo, no solo uno. Aprender del pueblo wixárika nos ayuda a ser mejores personas y a respetar a quienes son diferentes a nosotros.
+            </div>
+
+            <div class="argumento">
+                <strong>🤝 3. Es nuestro deber cuidarlas</strong>
+                Las lenguas originarias no pertenecen solo a quienes las hablan: son patrimonio de todos los mexicanos. Si desaparecen, perdemos todos. Podemos empezar por aprender sobre ellas, escuchar a sus hablantes y respetar su derecho a usarlas.
+            </div>
+
+            <div class="argumento">
+                <strong>💛 4. El respeto empieza con conocer</strong>
+                Muchas veces ignoramos lo que no conocemos. Al estudiar el pueblo wixárika, entendemos que son parte de nuestra historia y de nuestra identidad. Conocer es el primer paso para valorar, y valorar es el primer paso para respetar.
+            </div>
+        </div>
+
+        <div class="bloque">
+            <h3>🎯 Conclusión</h3>
+            <p>Las lenguas originarias como la wixárika no son reliquias del pasado: son colores vivos que merecen brillar hoy y mañana. Que Kusinela siga brillando en el cielo y que la voz del pueblo wixárika siga sonando en nuestra tierra por muchas generaciones más. Cuidar nuestras lenguas es cuidar nuestra alma como país. ✨</p>
+        </div>
+    </section>
+
+    <!-- 🔝 Botón volver arriba -->
+    <a href="#inicio" class="boton-arriba" id="volverArriba">↑</a>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>🌿 Proyecto escolar — El Pueblo Wixárika ✨</p>
+        <p style="margin-top:12px; font-size:0.9rem;">Con colores, respeto y cariño para siempre ✦ 💛</p>
+    </footer>
+
+    <script>
+        // 📌 Carrusel de la portada
+        const slides = document.querySelectorAll('.hero-slide');
+        let indice = 0;
+
+        setInterval(() => {
+            slides[indice].classList.remove('activo');
+            indice = (indice + 1) % slides.length;
+            slides[indice].classList.add('activo');
+        }, 5000);
+
+        // 📌 Animación al aparecer cada sección
+        const secciones = document.querySelectorAll('section');
+        const observar = new IntersectionObserver((entradas) => {
+            entradas.forEach(entrada => {
+                if (entrada.isIntersecting) {
+                    entrada.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        secciones.forEach(s => observar.observe(s));
+
+        // 🔝 Cambiar menú al bajar
+        const menu = document.getElementById('menu');
+        const boton = document.getElementById('volverArriba');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 60) {
+                menu.classList.add('scrolled');
+                boton.classList.add('visible');
+            } else {
+                menu.classList.remove('scrolled');
+                boton.classList.remove('visible');
+            }
+        });
+
+        // 📋 Navegación suave
+        document.querySelectorAll('a[href^="#"]').forEach(enlace => {
+            enlace.addEventListener('click', e => {
+                e.preventDefault();
+                const destino = document.querySelector(enlace.getAttribute('href'));
+                if (destino) destino.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+
+</body>
+</html>
